@@ -251,6 +251,7 @@
         <div class="stat-card"><div class="stat-label">Pending Withdrawals</div><div class="stat-value yellow" id="stat-withdrawals">—</div><div class="stat-change">Awaiting approval</div></div>
         <div class="stat-card"><div class="stat-label">Open Disputes</div><div class="stat-value red" id="stat-disputes">—</div><div class="stat-change">Needs review</div></div>
         <div class="stat-card"><div class="stat-label">Suspended Users</div><div class="stat-value red" id="stat-suspended">—</div><div class="stat-change">Restricted accounts</div></div>
+        <div class="stat-card"><div class="stat-label">Total Frozen Funds</div><div class="stat-value blue" id="stat-frozen">—</div><div class="stat-change">Locked balances</div></div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Recent Transactions</div></div>
@@ -384,9 +385,76 @@ function showLoginError(msg) {
   el.textContent = msg; el.style.display = 'block';
 }
 
+function openFreezeModal(id, name, balance, currency) {
+  document.getElementById('modal-title').textContent = '🧊 Freeze Balance';
+  document.getElementById('modal-body').textContent = `Freeze funds from ${name}'s account. The frozen amount will be deducted from their available balance and locked until you unfreeze it.`;
+  document.getElementById('modal-body').style.marginBottom = '0';
+  document.getElementById('modal-detail').innerHTML = `
+    <div style="margin:16px 0 8px">
+      <label class="input-label">Available Balance</label>
+      <div style="padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-family:'Space Mono',monospace;color:var(--green)">${currency} ${Number(balance).toLocaleString()}</div>
+    </div>
+    <div style="margin-bottom:8px">
+      <label class="input-label">Amount to Freeze (${currency})</label>
+      <input id="freeze-amount-input" type="number" min="1" max="${balance}" class="note-input" placeholder="Enter amount..." />
+    </div>
+    <div style="margin-bottom:4px">
+      <label class="input-label">Reason</label>
+      <input id="freeze-reason-input" class="note-input" placeholder="e.g. Suspicious activity, rule violation..." />
+    </div>`;
+  document.getElementById('modal-actions').innerHTML = `
+    <button class="modal-cancel" onclick="closeModalNow()">Cancel</button>
+    <button style="flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;background:var(--blue);color:#fff"
+      onclick="confirmFreeze('${id}')">Freeze Funds</button>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+async function confirmFreeze(id) {
+  const amount = parseFloat(document.getElementById('freeze-amount-input')?.value);
+  const reason = document.getElementById('freeze-reason-input')?.value?.trim();
+  if (!amount || amount <= 0) { toast('Enter a valid amount', 'red'); return; }
+  if (!reason) { toast('Please enter a reason', 'red'); return; }
+  closeModalNow();
+  const { data, error } = await sb.rpc('admin_freeze_balance', { p_user_id: id, p_amount: amount, p_reason: reason });
+  if (error || !data?.success) { toast(data?.message || 'Failed to freeze balance', 'red'); return; }
+  toast('Balance frozen ✓', 'green');
+  loadUsers(); loadDashboard();
+}
+
+function openUnfreezeModal(id, name, frozenBalance, currency) {
+  document.getElementById('modal-title').textContent = '🔓 Unfreeze Balance';
+  document.getElementById('modal-body').textContent = `Release frozen funds back to ${name}'s available balance.`;
+  document.getElementById('modal-body').style.marginBottom = '0';
+  document.getElementById('modal-detail').innerHTML = `
+    <div style="margin:16px 0 8px">
+      <label class="input-label">Currently Frozen</label>
+      <div style="padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-family:'Space Mono',monospace;color:var(--blue)">${currency} ${Number(frozenBalance).toLocaleString()}</div>
+    </div>
+    <div style="margin-bottom:4px">
+      <label class="input-label">Amount to Unfreeze (${currency})</label>
+      <input id="unfreeze-amount-input" type="number" min="1" max="${frozenBalance}" class="note-input" placeholder="Enter amount..." value="${frozenBalance}" />
+    </div>`;
+  document.getElementById('modal-actions').innerHTML = `
+    <button class="modal-cancel" onclick="closeModalNow()">Cancel</button>
+    <button class="modal-confirm-success" onclick="confirmUnfreeze('${id}')">Unfreeze Funds</button>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+async function confirmUnfreeze(id) {
+  const amount = parseFloat(document.getElementById('unfreeze-amount-input')?.value);
+  if (!amount || amount <= 0) { toast('Enter a valid amount', 'red'); return; }
+  closeModalNow();
+  const { data, error } = await sb.rpc('admin_unfreeze_balance', { p_user_id: id, p_amount: amount });
+  if (error || !data?.success) { toast(data?.message || 'Failed to unfreeze balance', 'red'); return; }
+  toast('Balance unfrozen ✓', 'green');
+  loadUsers(); loadDashboard();
+}
+
+
 async function handleLogout() {
   await sb.auth.signOut();
   location.reload();
+}
 }
 
 async function checkSession() {
@@ -433,6 +501,7 @@ async function loadDashboard() {
     { count: pendingW },
     { count: openDisputes },
     { count: suspended },
+    { data: frozenData },
   ] = await Promise.all([
     sb.from('profiles').select('*', { count: 'exact', head: true }),
     sb.from('transactions').select('*', { count: 'exact', head: true }),
@@ -440,15 +509,18 @@ async function loadDashboard() {
     sb.from('withdrawals').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
     sb.from('disputes').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
     sb.from('profiles').select('*', { count: 'exact', head: true }).eq('suspended', true),
+    sb.from('profiles').select('frozen_balance'),
   ]);
 
   const volume = (txnData || []).reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+  const totalFrozen = (frozenData || []).reduce((s, p) => s + (parseFloat(p.frozen_balance) || 0), 0);
   document.getElementById('stat-users').textContent       = userCount ?? '—';
   document.getElementById('stat-txns').textContent        = txnCount ?? '—';
   document.getElementById('stat-volume').textContent      = 'KES ' + volume.toLocaleString('en', { maximumFractionDigits: 0 });
   document.getElementById('stat-withdrawals').textContent = pendingW ?? '0';
   document.getElementById('stat-disputes').textContent    = openDisputes ?? '0';
   document.getElementById('stat-suspended').textContent   = suspended ?? '0';
+  document.getElementById('stat-frozen').textContent      = 'KES ' + totalFrozen.toLocaleString('en', { maximumFractionDigits: 0 });
 
   // disputes badge on sidebar
   if (openDisputes > 0) {
@@ -500,12 +572,13 @@ function renderUsers(users) {
   const el = document.getElementById('users-table');
   if (!users.length) { el.innerHTML = '<div class="empty">No users found.</div>'; return; }
   el.innerHTML = tableWrap(
-    '<tr><th>Name</th><th>Phone</th><th>Country</th><th>Balance</th><th>Status</th><th>Joined</th><th>Actions</th></tr>',
+    '<tr><th>Name</th><th>Phone</th><th>Country</th><th>Balance</th><th>Frozen</th><th>Status</th><th>Joined</th><th>Actions</th></tr>',
     users.map(u => `<tr>
       <td><strong>${u.full_name || '—'}</strong><br><span style="font-size:11px;color:var(--muted)">${u.email || ''}</span></td>
       <td class="mono" style="font-size:12px">${u.phone || '—'}</td>
       <td>${u.country || '—'}</td>
       <td class="mono" style="color:var(--green)">${u.currency || 'KES'} ${Number(u.balance || 0).toLocaleString()}</td>
+      <td class="mono" style="color:${u.frozen_balance > 0 ? 'var(--blue)' : 'var(--muted)'}">${u.frozen_balance > 0 ? `${u.currency || 'KES'} ${Number(u.frozen_balance).toLocaleString()}` : '—'}</td>
       <td>${u.role === 'admin' ? '<span class="badge badge-blue">Admin</span>' : u.suspended ? '<span class="badge badge-red">Suspended</span>' : '<span class="badge badge-green">Active</span>'}</td>
       <td style="color:var(--muted);font-size:12px">${fmtDate(u.created_at)}</td>
       <td>
@@ -515,6 +588,11 @@ function renderUsers(users) {
             ? u.suspended
               ? `<button class="btn-sm btn-success" onclick="unsuspendUser('${u.id}','${esc(u.full_name)}')">Unsuspend</button>`
               : `<button class="btn-sm btn-danger"  onclick="suspendUser('${u.id}','${esc(u.full_name)}')">Suspend</button>`
+            : ''}
+          ${u.role !== 'admin'
+            ? (u.frozen_balance > 0)
+              ? `<button class="btn-sm btn-success" onclick="openUnfreezeModal('${u.id}','${esc(u.full_name)}',${u.frozen_balance || 0},'${u.currency || 'KES'}')">Unfreeze</button>`
+              : `<button class="btn-sm" style="border-color:rgba(68,138,255,0.3);color:var(--blue);background:rgba(68,138,255,0.08)" onclick="openFreezeModal('${u.id}','${esc(u.full_name)}',${u.balance || 0},'${u.currency || 'KES'}')">Freeze</button>`
             : ''}
         </div>
       </td>
@@ -532,6 +610,8 @@ function viewUser(id) {
     ['Country', u.country || '—'],
     ['Currency', u.currency || '—'],
     ['Balance', `${u.currency || 'KES'} ${Number(u.balance || 0).toLocaleString()}`],
+    ['Frozen Balance', u.frozen_balance > 0 ? `${u.currency || 'KES'} ${Number(u.frozen_balance).toLocaleString()}` : '—'],
+    ['Freeze Reason', u.freeze_reason || '—'],
     ['Role', u.role || 'user'],
     ['Status', u.suspended ? '🔴 Suspended' : '🟢 Active'],
     ['Joined', fmtDate(u.created_at)],
