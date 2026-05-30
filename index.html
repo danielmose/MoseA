@@ -27,49 +27,98 @@
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
   .mono { font-family: 'Space Mono', monospace; }
 
-  /* LOGIN */
+  /* ── LOGIN ── */
   #login-screen {
-    display: flex; align-items: center; justify-content: center; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
     background: radial-gradient(ellipse at 60% 0%, rgba(0,230,118,0.06) 0%, transparent 60%);
   }
-  .login-box { width: 100%; max-width: 400px; padding: 48px 40px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; }
+  .login-box {
+    width: 100%; max-width: 400px; padding: 48px 40px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px;
+  }
   .login-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 36px; }
-  .login-logo .mark { width: 44px; height: 44px; background: var(--green); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: #000; }
+  .login-logo .mark {
+    width: 44px; height: 44px; background: var(--green);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: #000;
+  }
   .login-logo .name { font-size: 20px; font-weight: 700; }
   .login-logo .name span { color: var(--green); }
-  .login-logo .badge { font-size: 10px; font-weight: 600; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); padding: 3px 8px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .login-logo .badge {
+    font-size: 10px; font-weight: 600; color: var(--muted);
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 3px 8px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase;
+  }
   .login-box h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
   .login-box p { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
   .field { margin-bottom: 16px; }
   .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .field input { width: 100%; padding: 12px 16px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; }
+  .field input {
+    width: 100%; padding: 12px 16px;
+    background: var(--surface2); border: 1.5px solid var(--border);
+    border-radius: var(--radius); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none;
+    transition: border-color 0.2s;
+  }
   .field input:focus { border-color: var(--green); }
-  .btn-green { width: 100%; padding: 13px; background: var(--green); color: #000; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; border: none; border-radius: var(--radius); cursor: pointer; transition: opacity 0.2s; margin-top: 8px; }
+  .btn-green {
+    width: 100%; padding: 13px; background: var(--green); color: #000;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700;
+    border: none; border-radius: var(--radius); cursor: pointer;
+    transition: opacity 0.2s; margin-top: 8px;
+  }
   .btn-green:hover { opacity: 0.9; }
   .btn-green:disabled { opacity: 0.5; cursor: not-allowed; }
   .alert { padding: 12px 16px; border-radius: var(--radius); font-size: 14px; margin-bottom: 16px; }
   .alert-error { background: var(--red-dim); border: 1px solid rgba(255,68,68,0.2); color: var(--red); }
+  .alert-success { background: var(--green-dim); border: 1px solid rgba(0,230,118,0.2); color: var(--green); }
 
-  /* LAYOUT */
+  /* ── LAYOUT ── */
   #app { display: none; min-height: 100vh; }
-  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 220px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
-  .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-  .sidebar-logo .mark { width: 36px; height: 36px; background: var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; color: #000; }
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 220px;
+    background: var(--surface); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 24px 20px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-logo .mark {
+    width: 36px; height: 36px; background: var(--green); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; color: #000;
+  }
   .sidebar-logo .name { font-size: 16px; font-weight: 700; }
   .sidebar-logo .name span { color: var(--green); }
   .sidebar-logo small { display: block; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
-  nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; margin-bottom: 2px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--muted); transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; }
+  nav { flex: 1; padding: 16px 12px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px; margin-bottom: 2px;
+    cursor: pointer; font-size: 14px; font-weight: 500; color: var(--muted);
+    transition: all 0.15s; border: none; background: none; width: 100%; text-align: left;
+  }
   .nav-item:hover { background: var(--surface2); color: var(--text); }
   .nav-item.active { background: var(--green-dim); color: var(--green); }
   .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-  .nav-badge { margin-left: auto; background: var(--red); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
   .sidebar-footer { padding: 16px 12px; border-top: 1px solid var(--border); }
   .admin-info { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .admin-avatar { width: 34px; height: 34px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #000; flex-shrink: 0; }
+  .admin-avatar {
+    width: 34px; height: 34px; background: var(--green); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #000;
+  }
   .admin-name { font-size: 13px; font-weight: 600; }
   .admin-role { font-size: 11px; color: var(--muted); }
-  .btn-logout { width: 100%; padding: 9px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .btn-logout {
+    width: 100%; padding: 9px; background: transparent;
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--muted); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
   .btn-logout:hover { border-color: var(--red); color: var(--red); }
 
   .main { margin-left: 220px; padding: 32px; min-height: 100vh; }
@@ -78,9 +127,12 @@
   .page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
   .page-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
 
-  /* STATS */
+  /* ── STATS ── */
   .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
-  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+  }
   .stat-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
   .stat-value { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
   .stat-value.green { color: var(--green); }
@@ -89,24 +141,46 @@
   .stat-value.blue { color: var(--blue); }
   .stat-change { font-size: 12px; color: var(--muted); }
 
-  /* TABLE */
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; }
-  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  /* ── TABLE ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; margin-bottom: 20px;
+  }
+  .card-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
   .card-title { font-size: 15px; font-weight: 700; }
-  .search-bar { padding: 8px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; width: 220px; }
+  .search-bar {
+    padding: 8px 14px; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none;
+    width: 220px;
+  }
   .search-bar:focus { border-color: var(--green); }
   table { width: 100%; border-collapse: collapse; }
-  th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); background: var(--surface2); white-space: nowrap; }
-  td { padding: 13px 16px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
+  th {
+    padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border); background: var(--surface2);
+  }
+  td { padding: 13px 16px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.04); }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: rgba(255,255,255,0.02); }
-  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  }
   .badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
   .badge-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,68,68,0.2); }
   .badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(255,214,0,0.2); }
   .badge-blue { background: rgba(68,138,255,0.08); color: var(--blue); border: 1px solid rgba(68,138,255,0.2); }
   .badge-muted { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
-  .btn-sm { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .btn-sm {
+    padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1px solid; transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
   .btn-danger { border-color: rgba(255,68,68,0.3); color: var(--red); background: var(--red-dim); }
   .btn-danger:hover { background: rgba(255,68,68,0.15); }
   .btn-success { border-color: rgba(0,230,118,0.3); color: var(--green); background: var(--green-dim); }
@@ -116,14 +190,22 @@
   .loading { padding: 40px; text-align: center; color: var(--muted); font-size: 14px; }
   .empty { padding: 40px; text-align: center; color: var(--muted); font-size: 14px; }
 
-  /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 500px; transform: translateY(10px); transition: transform 0.2s; max-height: 90vh; overflow-y: auto; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; width: 100%; max-width: 480px;
+    transform: translateY(10px); transition: transform 0.2s;
+  }
   .modal-overlay.open .modal { transform: translateY(0); }
   .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
   .modal p { color: var(--muted); font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
-  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .modal-actions { display: flex; gap: 10px; }
   .modal-actions button { flex: 1; padding: 11px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; border: none; }
   .modal-cancel { background: var(--surface2); color: var(--text); }
   .modal-confirm-danger { background: var(--red); color: #fff; }
@@ -131,31 +213,28 @@
   .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
   .detail-row:last-child { border-bottom: none; }
   .detail-label { color: var(--muted); }
-  .detail-value { font-weight: 600; text-align: right; max-width: 65%; word-break: break-all; }
+  .detail-value { font-weight: 600; text-align: right; max-width: 60%; word-break: break-all; }
 
-  /* FILTER TABS */
+  /* ── FILTER TABS ── */
   .filter-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-  .filter-tab { padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--muted); transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .filter-tab {
+    padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: 1.5px solid var(--border); background: transparent;
+    color: var(--muted); transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  }
   .filter-tab.active { border-color: var(--green); background: var(--green-dim); color: var(--green); }
 
-  /* DISPUTE CARD */
-  .dispute-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 2px; }
-  .dispute-side { margin-bottom: 10px; }
-  .dispute-side-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .dispute-text { font-size: 13px; line-height: 1.5; }
-  .no-response { font-size: 12px; color: var(--muted); font-style: italic; }
-
-  /* TOAST */
-  #toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; transform: translateY(20px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600;
+    transform: translateY(20px); opacity: 0; transition: all 0.3s; pointer-events: none;
+  }
   #toast.show { transform: translateY(0); opacity: 1; }
   #toast.green { background: var(--green); color: #000; }
   #toast.red { background: var(--red); color: #fff; }
 
-  /* NOTE INPUT */
-  .note-input { width: 100%; padding: 10px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px; color: var(--text); font-size: 13px; outline: none; font-family: 'DM Sans', sans-serif; margin-top: 4px; }
-  .note-input:focus { border-color: var(--green); }
-  .input-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; margin-top: 16px; }
-
+  /* responsive */
   @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 768px) {
     .sidebar { width: 60px; }
@@ -168,7 +247,7 @@
 </head>
 <body>
 
-<!-- ══ LOGIN ══ -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">
@@ -183,18 +262,19 @@
     <div id="login-error" class="alert alert-error" style="display:none"></div>
     <div class="field">
       <label>Email</label>
-      <input type="email" id="login-email" placeholder="admin@pesayetu.com" onkeydown="if(event.key==='Enter')handleLogin()" />
+      <input type="email" id="login-email" placeholder="admin@pesayetu.com" />
     </div>
     <div class="field">
       <label>Password</label>
-      <input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleLogin()" />
+      <input type="password" id="login-password" placeholder="••••••••" />
     </div>
     <button class="btn-green" id="login-btn" onclick="handleLogin()">Sign In</button>
   </div>
 </div>
 
-<!-- ══ APP ══ -->
+<!-- APP -->
 <div id="app">
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
       <div class="mark">PY</div>
@@ -220,11 +300,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
         <span>Withdrawals</span>
       </button>
-      <button class="nav-item" onclick="showPage('disputes')" id="nav-disputes">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span>Disputes</span>
-        <span class="nav-badge" id="disputes-badge" style="display:none">0</span>
-      </button>
     </nav>
     <div class="sidebar-footer">
       <div class="admin-info">
@@ -238,20 +313,18 @@
     </div>
   </div>
 
+  <!-- MAIN -->
   <div class="main">
 
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="page-title">Dashboard</div>
       <div class="page-sub">Overview of PesaYetu platform activity</div>
-      <div class="stats-grid">
+      <div class="stats-grid" id="stats-grid">
         <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value blue" id="stat-users">—</div><div class="stat-change">Registered accounts</div></div>
         <div class="stat-card"><div class="stat-label">Total Transactions</div><div class="stat-value green" id="stat-txns">—</div><div class="stat-change">All time</div></div>
         <div class="stat-card"><div class="stat-label">Total Volume</div><div class="stat-value green" id="stat-volume">—</div><div class="stat-change">KES moved</div></div>
         <div class="stat-card"><div class="stat-label">Pending Withdrawals</div><div class="stat-value yellow" id="stat-withdrawals">—</div><div class="stat-change">Awaiting approval</div></div>
-        <div class="stat-card"><div class="stat-label">Open Disputes</div><div class="stat-value red" id="stat-disputes">—</div><div class="stat-change">Needs review</div></div>
-        <div class="stat-card"><div class="stat-label">Suspended Users</div><div class="stat-value red" id="stat-suspended">—</div><div class="stat-change">Restricted accounts</div></div>
-        <div class="stat-card"><div class="stat-label">Total Frozen Funds</div><div class="stat-value blue" id="stat-frozen">—</div><div class="stat-change">Locked balances</div></div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Recent Transactions</div></div>
@@ -265,8 +338,8 @@
       <div class="page-sub">Manage registered accounts</div>
       <div class="card">
         <div class="card-header">
-          <div class="card-title">All Users <span id="users-count" style="color:var(--muted);font-weight:400;font-size:13px"></span></div>
-          <input class="search-bar" placeholder="Search name, phone or email…" oninput="filterUsers(this.value)" />
+          <div class="card-title">All Users</div>
+          <input class="search-bar" placeholder="Search name or phone…" oninput="filterUsers(this.value)" />
         </div>
         <div id="users-table"><div class="loading">Loading...</div></div>
       </div>
@@ -276,18 +349,18 @@
     <div class="page" id="page-transactions">
       <div class="page-title">Transactions</div>
       <div class="page-sub">Full transaction history across the platform</div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
-        <div class="filter-tabs" style="margin-bottom:0" id="txn-filters">
-          <button class="filter-tab active" onclick="filterTxns('all',this)">All</button>
-          <button class="filter-tab" onclick="filterTxns('send',this)">Send</button>
-          <button class="filter-tab" onclick="filterTxns('receive',this)">Receive</button>
-          <button class="filter-tab" onclick="filterTxns('deposit',this)">Deposit</button>
-          <button class="filter-tab" onclick="filterTxns('withdraw',this)">Withdraw</button>
-        </div>
-        <input class="search-bar" style="width:200px" placeholder="Search reference…" oninput="filterTxnSearch(this.value)" />
+      <div class="filter-tabs" id="txn-filters">
+        <button class="filter-tab active" onclick="filterTxns('all')">All</button>
+        <button class="filter-tab" onclick="filterTxns('send')">Send</button>
+        <button class="filter-tab" onclick="filterTxns('receive')">Receive</button>
+        <button class="filter-tab" onclick="filterTxns('deposit')">Deposit</button>
+        <button class="filter-tab" onclick="filterTxns('withdraw')">Withdraw</button>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title">Transactions <span id="txns-count" style="color:var(--muted);font-weight:400;font-size:13px"></span></div></div>
+        <div class="card-header">
+          <div class="card-title">Transactions</div>
+          <input class="search-bar" placeholder="Search reference…" oninput="filterTxnSearch(this.value)" />
+        </div>
         <div id="txns-table"><div class="loading">Loading...</div></div>
       </div>
     </div>
@@ -296,11 +369,11 @@
     <div class="page" id="page-withdrawals">
       <div class="page-title">Withdrawals</div>
       <div class="page-sub">Review and manage withdrawal requests</div>
-      <div class="filter-tabs" id="wd-filters">
-        <button class="filter-tab active" onclick="filterWithdrawals('all',this)">All</button>
-        <button class="filter-tab" onclick="filterWithdrawals('pending',this)">Pending</button>
-        <button class="filter-tab" onclick="filterWithdrawals('completed',this)">Completed</button>
-        <button class="filter-tab" onclick="filterWithdrawals('failed',this)">Failed</button>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterWithdrawals('all')">All</button>
+        <button class="filter-tab" onclick="filterWithdrawals('pending')">Pending</button>
+        <button class="filter-tab" onclick="filterWithdrawals('completed')">Completed</button>
+        <button class="filter-tab" onclick="filterWithdrawals('failed')">Failed</button>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Withdrawal Requests</div></div>
@@ -308,27 +381,14 @@
       </div>
     </div>
 
-    <!-- DISPUTES -->
-    <div class="page" id="page-disputes">
-      <div class="page-title">Disputes</div>
-      <div class="page-sub">Reversal requests — review both sides and make a decision</div>
-      <div class="filter-tabs" id="dp-filters">
-        <button class="filter-tab active" onclick="filterDisputes('all',this)">All</button>
-        <button class="filter-tab" onclick="filterDisputes('pending',this)">Pending</button>
-        <button class="filter-tab" onclick="filterDisputes('resolved_reversed',this)">Approved</button>
-        <button class="filter-tab" onclick="filterDisputes('resolved_denied',this)">Denied</button>
-      </div>
-      <div id="disputes-list"><div class="loading">Loading...</div></div>
-    </div>
-
   </div>
 </div>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal" id="modal-box">
     <h3 id="modal-title">Confirm</h3>
-    <p id="modal-body" style="margin-bottom:0"></p>
+    <p id="modal-body"></p>
     <div id="modal-detail"></div>
     <div class="modal-actions" id="modal-actions"></div>
   </div>
@@ -337,43 +397,37 @@
 <div id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════
-// SUPABASE CONFIG
-// Paste your values from .env here:
-const SUPABASE_URL     = 'https://ziliybjinjeepanqkzfo.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppbGl5YmppbmplZXBhbnFremZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NjQ1OTgsImV4cCI6MjA5MjI0MDU5OH0.vxc_PWdFgZ6tIe6k68wkv7Lj_NKv5c62dsSKoELG_Zc';
-// ══════════════════════════════════════════
+// ── CONFIG ── Replace with your Supabase project URL and anon key
+const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
 
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let currentAdmin   = null;
-let allUsers       = [];
-let allTxns        = [];
+let currentAdmin = null;
+let allUsers = [];
+let allTxns = [];
 let allWithdrawals = [];
-let allDisputes    = [];
-let txnTypeFilter  = 'all';
-let txnSearch      = '';
-let wdFilter       = 'all';
-let dpFilter       = 'all';
+let txnTypeFilter = 'all';
+let txnSearchFilter = '';
+let withdrawalFilter = 'all';
 
-// ── AUTH ──────────────────────────────────
+// ── AUTH ──
 async function handleLogin() {
-  const email    = document.getElementById('login-email').value.trim();
+  const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
-  const btn      = document.getElementById('login-btn');
-  const errEl    = document.getElementById('login-error');
+  const btn = document.getElementById('login-btn');
+  const errEl = document.getElementById('login-error');
   errEl.style.display = 'none';
   if (!email || !password) { showLoginError('Please enter email and password.'); return; }
   btn.disabled = true; btn.textContent = 'Signing in…';
-
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
   if (error) { showLoginError(error.message); btn.disabled = false; btn.textContent = 'Sign In'; return; }
-
+  // Check admin role
   const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
   if (!profile || profile.role !== 'admin') {
     await sb.auth.signOut();
-    showLoginError('Access denied. Admin accounts only.');
+    showLoginError('Access denied. This portal is for admins only.');
     btn.disabled = false; btn.textContent = 'Sign In'; return;
   }
   currentAdmin = { ...data.user, profile };
@@ -385,76 +439,9 @@ function showLoginError(msg) {
   el.textContent = msg; el.style.display = 'block';
 }
 
-function openFreezeModal(id, name, balance, currency) {
-  document.getElementById('modal-title').textContent = '🧊 Freeze Balance';
-  document.getElementById('modal-body').textContent = `Freeze funds from ${name}'s account. The frozen amount will be deducted from their available balance and locked until you unfreeze it.`;
-  document.getElementById('modal-body').style.marginBottom = '0';
-  document.getElementById('modal-detail').innerHTML = `
-    <div style="margin:16px 0 8px">
-      <label class="input-label">Available Balance</label>
-      <div style="padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-family:'Space Mono',monospace;color:var(--green)">${currency} ${Number(balance).toLocaleString()}</div>
-    </div>
-    <div style="margin-bottom:8px">
-      <label class="input-label">Amount to Freeze (${currency})</label>
-      <input id="freeze-amount-input" type="number" min="1" max="${balance}" class="note-input" placeholder="Enter amount..." />
-    </div>
-    <div style="margin-bottom:4px">
-      <label class="input-label">Reason</label>
-      <input id="freeze-reason-input" class="note-input" placeholder="e.g. Suspicious activity, rule violation..." />
-    </div>`;
-  document.getElementById('modal-actions').innerHTML = `
-    <button class="modal-cancel" onclick="closeModalNow()">Cancel</button>
-    <button style="flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;background:var(--blue);color:#fff"
-      onclick="confirmFreeze('${id}')">Freeze Funds</button>`;
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-async function confirmFreeze(id) {
-  const amount = parseFloat(document.getElementById('freeze-amount-input')?.value);
-  const reason = document.getElementById('freeze-reason-input')?.value?.trim();
-  if (!amount || amount <= 0) { toast('Enter a valid amount', 'red'); return; }
-  if (!reason) { toast('Please enter a reason', 'red'); return; }
-  closeModalNow();
-  const { data, error } = await sb.rpc('admin_freeze_balance', { p_user_id: id, p_amount: amount, p_reason: reason });
-  if (error || !data?.success) { toast(data?.message || 'Failed to freeze balance', 'red'); return; }
-  toast('Balance frozen ✓', 'green');
-  loadUsers(); loadDashboard();
-}
-
-function openUnfreezeModal(id, name, frozenBalance, currency) {
-  document.getElementById('modal-title').textContent = '🔓 Unfreeze Balance';
-  document.getElementById('modal-body').textContent = `Release frozen funds back to ${name}'s available balance.`;
-  document.getElementById('modal-body').style.marginBottom = '0';
-  document.getElementById('modal-detail').innerHTML = `
-    <div style="margin:16px 0 8px">
-      <label class="input-label">Currently Frozen</label>
-      <div style="padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-family:'Space Mono',monospace;color:var(--blue)">${currency} ${Number(frozenBalance).toLocaleString()}</div>
-    </div>
-    <div style="margin-bottom:4px">
-      <label class="input-label">Amount to Unfreeze (${currency})</label>
-      <input id="unfreeze-amount-input" type="number" min="1" max="${frozenBalance}" class="note-input" placeholder="Enter amount..." value="${frozenBalance}" />
-    </div>`;
-  document.getElementById('modal-actions').innerHTML = `
-    <button class="modal-cancel" onclick="closeModalNow()">Cancel</button>
-    <button class="modal-confirm-success" onclick="confirmUnfreeze('${id}')">Unfreeze Funds</button>`;
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-async function confirmUnfreeze(id) {
-  const amount = parseFloat(document.getElementById('unfreeze-amount-input')?.value);
-  if (!amount || amount <= 0) { toast('Enter a valid amount', 'red'); return; }
-  closeModalNow();
-  const { data, error } = await sb.rpc('admin_unfreeze_balance', { p_user_id: id, p_amount: amount });
-  if (error || !data?.success) { toast(data?.message || 'Failed to unfreeze balance', 'red'); return; }
-  toast('Balance unfrozen ✓', 'green');
-  loadUsers(); loadDashboard();
-}
-
-
 async function handleLogout() {
   await sb.auth.signOut();
   location.reload();
-}
 }
 
 async function checkSession() {
@@ -473,18 +460,13 @@ function initApp() {
   const name = currentAdmin.profile?.full_name || currentAdmin.email || 'Admin';
   document.getElementById('admin-name').textContent = name;
   document.getElementById('admin-avatar').textContent = name.charAt(0).toUpperCase();
-  loadAll();
-}
-
-function loadAll() {
   loadDashboard();
   loadUsers();
   loadTransactions();
   loadWithdrawals();
-  loadDisputes();
 }
 
-// ── NAVIGATION ────────────────────────────
+// ── NAVIGATION ──
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -492,42 +474,21 @@ function showPage(page) {
   document.getElementById('nav-' + page).classList.add('active');
 }
 
-// ── DASHBOARD ─────────────────────────────
+// ── DASHBOARD ──
 async function loadDashboard() {
-  const [
-    { count: userCount },
-    { count: txnCount },
-    { data: txnData },
-    { count: pendingW },
-    { count: openDisputes },
-    { count: suspended },
-    { data: frozenData },
-  ] = await Promise.all([
+  const [{ count: userCount }, { count: txnCount }, { data: txnData }, { count: pendingW }] = await Promise.all([
     sb.from('profiles').select('*', { count: 'exact', head: true }),
     sb.from('transactions').select('*', { count: 'exact', head: true }),
     sb.from('transactions').select('amount'),
     sb.from('withdrawals').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-    sb.from('disputes').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-    sb.from('profiles').select('*', { count: 'exact', head: true }).eq('suspended', true),
-    sb.from('profiles').select('frozen_balance'),
   ]);
-
   const volume = (txnData || []).reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
-  const totalFrozen = (frozenData || []).reduce((s, p) => s + (parseFloat(p.frozen_balance) || 0), 0);
-  document.getElementById('stat-users').textContent       = userCount ?? '—';
-  document.getElementById('stat-txns').textContent        = txnCount ?? '—';
-  document.getElementById('stat-volume').textContent      = 'KES ' + volume.toLocaleString('en', { maximumFractionDigits: 0 });
+  document.getElementById('stat-users').textContent = userCount ?? '—';
+  document.getElementById('stat-txns').textContent = txnCount ?? '—';
+  document.getElementById('stat-volume').textContent = 'KES ' + volume.toLocaleString('en', { maximumFractionDigits: 0 });
   document.getElementById('stat-withdrawals').textContent = pendingW ?? '0';
-  document.getElementById('stat-disputes').textContent    = openDisputes ?? '0';
-  document.getElementById('stat-suspended').textContent   = suspended ?? '0';
-  document.getElementById('stat-frozen').textContent      = 'KES ' + totalFrozen.toLocaleString('en', { maximumFractionDigits: 0 });
 
-  // disputes badge on sidebar
-  if (openDisputes > 0) {
-    const badge = document.getElementById('disputes-badge');
-    badge.textContent = openDisputes; badge.style.display = 'inline-block';
-  }
-
+  // Recent transactions
   const { data: recent } = await sb.from('transactions')
     .select('*, sender:sender_id(full_name), receiver:receiver_id(full_name)')
     .order('created_at', { ascending: false }).limit(10);
@@ -537,20 +498,21 @@ async function loadDashboard() {
 function renderRecentTxns(txns) {
   const el = document.getElementById('recent-txns');
   if (!txns.length) { el.innerHTML = '<div class="empty">No transactions yet.</div>'; return; }
-  el.innerHTML = tableWrap(
-    '<tr><th>Reference</th><th>Type</th><th>From</th><th>To</th><th>Amount</th><th>Date</th></tr>',
-    txns.map(t => `<tr>
-      <td class="mono" style="font-size:11px;color:var(--muted)">${t.reference || t.id?.slice(0,8)}</td>
-      <td>${typeBadge(t.type)}</td>
-      <td>${t.sender?.full_name || '—'}</td>
-      <td>${t.receiver?.full_name || '—'}</td>
-      <td class="mono" style="color:var(--green)">KES ${Number(t.amount).toLocaleString()}</td>
-      <td style="color:var(--muted);font-size:12px">${fmtDate(t.created_at)}</td>
-    </tr>`).join('')
-  );
+  el.innerHTML = `<table>
+    <thead><tr><th>Reference</th><th>Type</th><th>From</th><th>To</th><th>Amount</th><th>Date</th></tr></thead>
+    <tbody>${txns.map(t => `
+      <tr>
+        <td class="mono" style="font-size:11px;color:var(--muted)">${t.reference || t.id?.slice(0,8)}</td>
+        <td>${typeBadge(t.type)}</td>
+        <td>${t.sender?.full_name || '—'}</td>
+        <td>${t.receiver?.full_name || '—'}</td>
+        <td class="mono" style="color:var(--green)">KES ${Number(t.amount).toLocaleString()}</td>
+        <td style="color:var(--muted);font-size:12px">${fmtDate(t.created_at)}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
 }
 
-// ── USERS ─────────────────────────────────
+// ── USERS ──
 async function loadUsers() {
   const { data, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
   if (error) { document.getElementById('users-table').innerHTML = '<div class="empty">Failed to load users.</div>'; return; }
@@ -568,128 +530,122 @@ function filterUsers(q) {
 }
 
 function renderUsers(users) {
-  document.getElementById('users-count').textContent = `(${users.length})`;
   const el = document.getElementById('users-table');
   if (!users.length) { el.innerHTML = '<div class="empty">No users found.</div>'; return; }
-  el.innerHTML = tableWrap(
-    '<tr><th>Name</th><th>Phone</th><th>Country</th><th>Balance</th><th>Frozen</th><th>Status</th><th>Joined</th><th>Actions</th></tr>',
-    users.map(u => `<tr>
-      <td><strong>${u.full_name || '—'}</strong><br><span style="font-size:11px;color:var(--muted)">${u.email || ''}</span></td>
-      <td class="mono" style="font-size:12px">${u.phone || '—'}</td>
-      <td>${u.country || '—'}</td>
-      <td class="mono" style="color:var(--green)">${u.currency || 'KES'} ${Number(u.balance || 0).toLocaleString()}</td>
-      <td class="mono" style="color:${u.frozen_balance > 0 ? 'var(--blue)' : 'var(--muted)'}">${u.frozen_balance > 0 ? `${u.currency || 'KES'} ${Number(u.frozen_balance).toLocaleString()}` : '—'}</td>
-      <td>${u.role === 'admin' ? '<span class="badge badge-blue">Admin</span>' : u.suspended ? '<span class="badge badge-red">Suspended</span>' : '<span class="badge badge-green">Active</span>'}</td>
-      <td style="color:var(--muted);font-size:12px">${fmtDate(u.created_at)}</td>
-      <td>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn-sm btn-neutral" onclick="viewUser('${u.id}')">View</button>
-          ${u.role !== 'admin'
-            ? u.suspended
-              ? `<button class="btn-sm btn-success" onclick="unsuspendUser('${u.id}','${esc(u.full_name)}')">Unsuspend</button>`
-              : `<button class="btn-sm btn-danger"  onclick="suspendUser('${u.id}','${esc(u.full_name)}')">Suspend</button>`
-            : ''}
-          ${u.role !== 'admin'
-            ? (u.frozen_balance > 0)
-              ? `<button class="btn-sm btn-success" onclick="openUnfreezeModal('${u.id}','${esc(u.full_name)}',${u.frozen_balance || 0},'${u.currency || 'KES'}')">Unfreeze</button>`
-              : `<button class="btn-sm" style="border-color:rgba(68,138,255,0.3);color:var(--blue);background:rgba(68,138,255,0.08)" onclick="openFreezeModal('${u.id}','${esc(u.full_name)}',${u.balance || 0},'${u.currency || 'KES'}')">Freeze</button>`
-            : ''}
-        </div>
-      </td>
-    </tr>`).join('')
-  );
+  el.innerHTML = `<table>
+    <thead><tr><th>Name</th><th>Phone</th><th>Country</th><th>Balance</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
+    <tbody>${users.map(u => `
+      <tr>
+        <td><strong>${u.full_name || '—'}</strong><br><span style="font-size:11px;color:var(--muted)">${u.email || ''}</span></td>
+        <td class="mono" style="font-size:12px">${u.phone || '—'}</td>
+        <td>${u.country || '—'}</td>
+        <td class="mono" style="color:var(--green)">${u.currency || 'KES'} ${Number(u.balance || 0).toLocaleString()}</td>
+        <td>${u.role === 'admin' ? '<span class="badge badge-blue">Admin</span>' : u.suspended ? '<span class="badge badge-red">Suspended</span>' : '<span class="badge badge-green">Active</span>'}</td>
+        <td style="color:var(--muted);font-size:12px">${fmtDate(u.created_at)}</td>
+        <td>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn-sm btn-neutral" onclick="viewUser('${u.id}')">View</button>
+            ${u.role !== 'admin' ? (u.suspended
+              ? `<button class="btn-sm btn-success" onclick="unsuspendUser('${u.id}','${u.full_name}')">Unsuspend</button>`
+              : `<button class="btn-sm btn-danger" onclick="suspendUser('${u.id}','${u.full_name}')">Suspend</button>`
+            ) : ''}
+          </div>
+        </td>
+      </tr>`).join('')}
+    </tbody></table>`;
 }
 
 function viewUser(id) {
   const u = allUsers.find(x => x.id === id);
   if (!u) return;
-  showDetailModal('User Details', [
+  openModal('User Details', '', [
     ['Name', u.full_name || '—'],
     ['Phone', u.phone || '—'],
     ['Email', u.email || '—'],
     ['Country', u.country || '—'],
     ['Currency', u.currency || '—'],
     ['Balance', `${u.currency || 'KES'} ${Number(u.balance || 0).toLocaleString()}`],
-    ['Frozen Balance', u.frozen_balance > 0 ? `${u.currency || 'KES'} ${Number(u.frozen_balance).toLocaleString()}` : '—'],
-    ['Freeze Reason', u.freeze_reason || '—'],
     ['Role', u.role || 'user'],
-    ['Status', u.suspended ? '🔴 Suspended' : '🟢 Active'],
+    ['Status', u.suspended ? 'Suspended' : 'Active'],
     ['Joined', fmtDate(u.created_at)],
   ], [{ label: 'Close', cls: 'modal-cancel', fn: 'closeModalNow()' }]);
 }
 
 function suspendUser(id, name) {
-  showConfirmModal(
-    'Suspend User',
-    `Are you sure you want to suspend ${name}? They will lose access immediately.`,
-    [{ label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
-     { label: 'Suspend', cls: 'modal-confirm-danger', fn: `confirmSuspend('${id}')` }]
-  );
+  openModal('Suspend User', `Are you sure you want to suspend ${name}? They will not be able to log in.`, [], [
+    { label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
+    { label: 'Suspend', cls: 'modal-confirm-danger', fn: `confirmSuspend('${id}')` },
+  ]);
 }
+
 async function confirmSuspend(id) {
   closeModalNow();
   const { error } = await sb.from('profiles').update({ suspended: true }).eq('id', id);
-  if (error) { toast('Failed to suspend', 'red'); return; }
-  toast('User suspended', 'green'); loadUsers(); loadDashboard();
+  if (error) { toast('Failed to suspend user', 'red'); return; }
+  toast('User suspended', 'green');
+  loadUsers();
 }
 
 function unsuspendUser(id, name) {
-  showConfirmModal(
-    'Unsuspend User',
-    `Restore access for ${name}?`,
-    [{ label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
-     { label: 'Unsuspend', cls: 'modal-confirm-success', fn: `confirmUnsuspend('${id}')` }]
-  );
+  openModal('Unsuspend User', `Restore access for ${name}?`, [], [
+    { label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
+    { label: 'Unsuspend', cls: 'modal-confirm-success', fn: `confirmUnsuspend('${id}')` },
+  ]);
 }
+
 async function confirmUnsuspend(id) {
   closeModalNow();
   const { error } = await sb.from('profiles').update({ suspended: false }).eq('id', id);
-  if (error) { toast('Failed to unsuspend', 'red'); return; }
-  toast('User unsuspended', 'green'); loadUsers(); loadDashboard();
+  if (error) { toast('Failed to unsuspend user', 'red'); return; }
+  toast('User unsuspended', 'green');
+  loadUsers();
 }
 
-// ── TRANSACTIONS ──────────────────────────
+// ── TRANSACTIONS ──
 async function loadTransactions() {
   const { data, error } = await sb.from('transactions')
     .select('*, sender:sender_id(full_name), receiver:receiver_id(full_name)')
-    .order('created_at', { ascending: false }).limit(300);
+    .order('created_at', { ascending: false }).limit(200);
   if (error) { document.getElementById('txns-table').innerHTML = '<div class="empty">Failed to load.</div>'; return; }
   allTxns = data || [];
   renderTxns();
 }
 
-function filterTxns(type, btn) {
+function filterTxns(type) {
   txnTypeFilter = type;
   document.querySelectorAll('#txn-filters .filter-tab').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+  event.target.classList.add('active');
   renderTxns();
 }
 
-function filterTxnSearch(q) { txnSearch = q; renderTxns(); }
+function filterTxnSearch(q) {
+  txnSearchFilter = q;
+  renderTxns();
+}
 
 function renderTxns() {
   let data = allTxns;
   if (txnTypeFilter !== 'all') data = data.filter(t => t.type === txnTypeFilter);
-  if (txnSearch) data = data.filter(t => (t.reference || '').toLowerCase().includes(txnSearch.toLowerCase()));
-  document.getElementById('txns-count').textContent = `(${data.length})`;
+  if (txnSearchFilter) data = data.filter(t => (t.reference || '').toLowerCase().includes(txnSearchFilter.toLowerCase()));
   const el = document.getElementById('txns-table');
   if (!data.length) { el.innerHTML = '<div class="empty">No transactions found.</div>'; return; }
-  el.innerHTML = tableWrap(
-    '<tr><th>Reference</th><th>Type</th><th>Sender</th><th>Receiver</th><th>Amount</th><th>Fee</th><th>Status</th><th>Date</th></tr>',
-    data.map(t => `<tr>
-      <td class="mono" style="font-size:11px;color:var(--muted)">${t.reference || '—'}</td>
-      <td>${typeBadge(t.type)}</td>
-      <td>${t.sender?.full_name || '—'}</td>
-      <td>${t.receiver?.full_name || '—'}</td>
-      <td class="mono">${t.currency || 'KES'} ${Number(t.amount).toLocaleString()}</td>
-      <td class="mono" style="color:var(--muted)">${Number(t.charge || 0).toLocaleString()}</td>
-      <td>${t.reversed ? '<span class="badge badge-red">Reversed</span>' : '<span class="badge badge-green">Completed</span>'}</td>
-      <td style="color:var(--muted);font-size:12px">${fmtDate(t.created_at)}</td>
-    </tr>`).join('')
-  );
+  el.innerHTML = `<table>
+    <thead><tr><th>Reference</th><th>Type</th><th>Sender</th><th>Receiver</th><th>Amount</th><th>Fee</th><th>Status</th><th>Date</th></tr></thead>
+    <tbody>${data.map(t => `
+      <tr>
+        <td class="mono" style="font-size:11px;color:var(--muted)">${t.reference || '—'}</td>
+        <td>${typeBadge(t.type)}</td>
+        <td>${t.sender?.full_name || '—'}</td>
+        <td>${t.receiver?.full_name || '—'}</td>
+        <td class="mono">${t.currency || 'KES'} ${Number(t.amount).toLocaleString()}</td>
+        <td class="mono" style="color:var(--muted)">${Number(t.charge || 0).toLocaleString()}</td>
+        <td>${t.reversed ? '<span class="badge badge-red">Reversed</span>' : '<span class="badge badge-green">Completed</span>'}</td>
+        <td style="color:var(--muted);font-size:12px">${fmtDate(t.created_at)}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
 }
 
-// ── WITHDRAWALS ───────────────────────────
+// ── WITHDRAWALS ──
 async function loadWithdrawals() {
   const { data, error } = await sb.from('withdrawals')
     .select('*, profile:user_id(full_name, phone)')
@@ -699,239 +655,115 @@ async function loadWithdrawals() {
   renderWithdrawals();
 }
 
-function filterWithdrawals(status, btn) {
-  wdFilter = status;
-  document.querySelectorAll('#wd-filters .filter-tab').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+function filterWithdrawals(status) {
+  withdrawalFilter = status;
+  document.querySelectorAll('#page-withdrawals .filter-tab').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
   renderWithdrawals();
 }
 
 function renderWithdrawals() {
-  const data = wdFilter === 'all' ? allWithdrawals : allWithdrawals.filter(w => w.status === wdFilter);
+  let data = allWithdrawals;
+  if (withdrawalFilter !== 'all') data = data.filter(w => w.status === withdrawalFilter);
   const el = document.getElementById('withdrawals-table');
   if (!data.length) { el.innerHTML = '<div class="empty">No withdrawals found.</div>'; return; }
-  el.innerHTML = tableWrap(
-    '<tr><th>User</th><th>Phone</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th><th>Actions</th></tr>',
-    data.map(w => `<tr>
-      <td><strong>${w.profile?.full_name || '—'}</strong></td>
-      <td class="mono" style="font-size:12px">${w.profile?.phone || '—'}</td>
-      <td class="mono" style="color:var(--green)">${w.currency || 'KES'} ${Number(w.amount).toLocaleString()}</td>
-      <td>${w.method || '—'}</td>
-      <td>${statusBadge(w.status)}</td>
-      <td style="color:var(--muted);font-size:12px">${fmtDate(w.created_at)}</td>
-      <td>
-        <div style="display:flex;gap:6px">
-          ${w.status === 'pending'
-            ? `<button class="btn-sm btn-success" onclick="approveWithdrawal('${w.id}')">Approve</button>
-               <button class="btn-sm btn-danger"  onclick="rejectWithdrawal('${w.id}')">Reject</button>`
-            : '<span style="color:var(--muted);font-size:12px">—</span>'}
-        </div>
-      </td>
-    </tr>`).join('')
-  );
+  el.innerHTML = `<table>
+    <thead><tr><th>User</th><th>Phone</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+    <tbody>${data.map(w => `
+      <tr>
+        <td><strong>${w.profile?.full_name || '—'}</strong></td>
+        <td class="mono" style="font-size:12px">${w.profile?.phone || '—'}</td>
+        <td class="mono" style="color:var(--green)">${w.currency || 'KES'} ${Number(w.amount).toLocaleString()}</td>
+        <td>${w.method || '—'}</td>
+        <td>${statusBadge(w.status)}</td>
+        <td style="color:var(--muted);font-size:12px">${fmtDate(w.created_at)}</td>
+        <td>
+          <div style="display:flex;gap:6px">
+            ${w.status === 'pending' ? `
+              <button class="btn-sm btn-success" onclick="approveWithdrawal('${w.id}')">Approve</button>
+              <button class="btn-sm btn-danger" onclick="rejectWithdrawal('${w.id}')">Reject</button>
+            ` : '<span style="color:var(--muted);font-size:12px">—</span>'}
+          </div>
+        </td>
+      </tr>`).join('')}
+    </tbody></table>`;
 }
 
 function approveWithdrawal(id) {
   const w = allWithdrawals.find(x => x.id === id);
-  showConfirmModal(
-    'Approve Withdrawal',
-    `Approve KES ${Number(w?.amount).toLocaleString()} withdrawal for ${w?.profile?.full_name}?`,
-    [{ label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
-     { label: 'Approve', cls: 'modal-confirm-success', fn: `confirmApproveWd('${id}')` }]
-  );
+  openModal('Approve Withdrawal', `Approve withdrawal of KES ${Number(w?.amount).toLocaleString()} for ${w?.profile?.full_name}?`, [], [
+    { label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
+    { label: 'Approve', cls: 'modal-confirm-success', fn: `confirmApproveWithdrawal('${id}')` },
+  ]);
 }
-async function confirmApproveWd(id) {
+
+async function confirmApproveWithdrawal(id) {
   closeModalNow();
   const { error } = await sb.from('withdrawals').update({ status: 'completed' }).eq('id', id);
   if (error) { toast('Failed to approve', 'red'); return; }
-  toast('Withdrawal approved ✓', 'green'); loadWithdrawals(); loadDashboard();
+  toast('Withdrawal approved', 'green');
+  loadWithdrawals();
+  loadDashboard();
 }
 
 function rejectWithdrawal(id) {
   const w = allWithdrawals.find(x => x.id === id);
-  showConfirmModal(
-    'Reject Withdrawal',
-    `Reject KES ${Number(w?.amount).toLocaleString()} withdrawal for ${w?.profile?.full_name}?`,
-    [{ label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
-     { label: 'Reject', cls: 'modal-confirm-danger', fn: `confirmRejectWd('${id}')` }]
-  );
+  openModal('Reject Withdrawal', `Reject withdrawal of KES ${Number(w?.amount).toLocaleString()} for ${w?.profile?.full_name}? The amount will need to be manually refunded if already deducted.`, [], [
+    { label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
+    { label: 'Reject', cls: 'modal-confirm-danger', fn: `confirmRejectWithdrawal('${id}')` },
+  ]);
 }
-async function confirmRejectWd(id) {
+
+async function confirmRejectWithdrawal(id) {
   closeModalNow();
   const { error } = await sb.from('withdrawals').update({ status: 'failed' }).eq('id', id);
   if (error) { toast('Failed to reject', 'red'); return; }
-  toast('Withdrawal rejected', 'red'); loadWithdrawals(); loadDashboard();
+  toast('Withdrawal rejected', 'red');
+  loadWithdrawals();
+  loadDashboard();
 }
 
-// ── DISPUTES ──────────────────────────────
-async function loadDisputes() {
-  const { data, error } = await sb.from('disputes')
-    .select(`*, sender:sender_id(full_name, phone), receiver:receiver_id(full_name, phone),
-             transaction:transaction_id(amount, currency, reference, created_at)`)
-    .order('created_at', { ascending: false });
-  if (error) { document.getElementById('disputes-list').innerHTML = '<div class="empty">Failed to load disputes.</div>'; return; }
-  allDisputes = data || [];
-  renderDisputes();
-
-  // update sidebar badge
-  const pending = allDisputes.filter(d => d.status === 'pending').length;
-  const badge = document.getElementById('disputes-badge');
-  if (pending > 0) { badge.textContent = pending; badge.style.display = 'inline-block'; }
-  else { badge.style.display = 'none'; }
-}
-
-function filterDisputes(status, btn) {
-  dpFilter = status;
-  document.querySelectorAll('#dp-filters .filter-tab').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderDisputes();
-}
-
-function renderDisputes() {
-  const data = dpFilter === 'all' ? allDisputes : allDisputes.filter(d => d.status === dpFilter);
-  const el = document.getElementById('disputes-list');
-  if (!data.length) { el.innerHTML = '<div class="empty" style="padding:40px;text-align:center;color:var(--muted)">No disputes found.</div>'; return; }
-
-  el.innerHTML = data.map(d => `
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-header" style="flex-wrap:wrap;gap:12px">
-        <div>
-          <div class="card-title">
-            ${d.transaction?.reference || d.transaction_id?.slice(0,8) || '—'}
-            <span style="margin-left:8px">${disputeStatusBadge(d.status)}</span>
-          </div>
-          <div style="font-size:12px;color:var(--muted);margin-top:3px">${fmtDate(d.created_at)}</div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <span style="font-size:13px"><strong>${d.transaction?.currency || 'KES'} ${Number(d.transaction?.amount || 0).toLocaleString()}</strong></span>
-          ${d.status === 'pending' ? `
-            <button class="btn-sm btn-success" onclick="openResolveModal('${d.id}','${d.transaction_id}','approve')">Approve Reversal</button>
-            <button class="btn-sm btn-danger"  onclick="openResolveModal('${d.id}','${d.transaction_id}','deny')">Deny Reversal</button>
-          ` : d.admin_note ? `<span style="font-size:12px;color:var(--muted)">Note: ${d.admin_note}</span>` : ''}
-        </div>
-      </div>
-      <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="dispute-card">
-          <div class="dispute-side-label" style="color:var(--red)">📤 Sender — ${d.sender?.full_name || '—'}</div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${d.sender?.phone || ''}</div>
-          <div class="dispute-text">${d.sender_reason || '—'}</div>
-        </div>
-        <div class="dispute-card">
-          <div class="dispute-side-label" style="color:var(--green)">📥 Receiver — ${d.receiver?.full_name || '—'}</div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${d.receiver?.phone || ''}</div>
-          <div class="${d.receiver_response ? 'dispute-text' : 'no-response'}">${d.receiver_response || 'No response submitted yet'}</div>
-        </div>
-      </div>
-      ${d.resolved_at ? `<div style="padding:0 16px 14px;font-size:12px;color:var(--muted)">Resolved on ${fmtDate(d.resolved_at)}</div>` : ''}
-    </div>
-  `).join('');
-}
-
-function openResolveModal(disputeId, txId, action) {
-  const d = allDisputes.find(x => x.id === disputeId);
-  const label = action === 'approve' ? 'Approve Reversal' : 'Deny Reversal';
-  const body  = action === 'approve'
-    ? `This will reverse the transaction and refund KES ${Number(d?.transaction?.amount || 0).toLocaleString()} to the sender. The receiver's balance will be deducted.`
-    : 'The reversal will be denied. The transaction stays as completed.';
-
-  document.getElementById('modal-title').textContent = label;
-  document.getElementById('modal-body').textContent  = body;
-  document.getElementById('modal-body').style.marginBottom = '0';
-  document.getElementById('modal-detail').innerHTML = `
-    <label class="input-label">Admin Note (optional — visible to both users)</label>
-    <input id="admin-note-input" class="note-input" placeholder="e.g. Reversal approved after review…" />
-  `;
-  document.getElementById('modal-actions').innerHTML = `
-    <button class="modal-cancel" onclick="closeModalNow()">Cancel</button>
-    <button class="${action === 'approve' ? 'modal-confirm-success' : 'modal-confirm-danger'}"
-      onclick="confirmResolveDispute('${disputeId}','${txId}','${action}')">
-      ${action === 'approve' ? 'Yes, Approve' : 'Yes, Deny'}
-    </button>`;
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-async function confirmResolveDispute(disputeId, txId, action) {
-  const adminNote = document.getElementById('admin-note-input')?.value?.trim() || null;
-  closeModalNow();
-
-  if (action === 'approve') {
-    const { data, error } = await sb.rpc('admin_reverse_transaction', { p_transaction_id: txId });
-    if (error || !data?.success) {
-      toast('Reversal RPC failed: ' + (error?.message || data?.message || 'unknown error'), 'red');
-      return;
-    }
-  }
-
-  const newStatus = action === 'approve' ? 'resolved_reversed' : 'resolved_denied';
-  const { error: updateErr } = await sb.from('disputes').update({
-    status: newStatus,
-    admin_note: adminNote,
-    resolved_at: new Date().toISOString(),
-  }).eq('id', disputeId);
-
-  if (updateErr) { toast('Failed to update dispute status', 'red'); return; }
-
-  toast(action === 'approve' ? 'Reversal approved ✓' : 'Reversal denied', action === 'approve' ? 'green' : 'red');
-  loadDisputes(); loadDashboard(); loadTransactions();
-}
-
-// ── MODAL HELPERS ─────────────────────────
-function showConfirmModal(title, body, actions) {
-  document.getElementById('modal-title').textContent    = title;
-  document.getElementById('modal-body').textContent     = body;
-  document.getElementById('modal-body').style.marginBottom = '0';
-  document.getElementById('modal-detail').innerHTML     = '';
-  document.getElementById('modal-actions').innerHTML    = actions.map(a =>
-    `<button class="${a.cls}" onclick="${a.fn}">${a.label}</button>`).join('');
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-function showDetailModal(title, rows, actions) {
+// ── MODAL ──
+function openModal(title, body, details, actions) {
   document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-body').textContent  = '';
-  document.getElementById('modal-body').style.marginBottom = '0';
-  document.getElementById('modal-detail').innerHTML  = rows.map(([l, v]) =>
+  document.getElementById('modal-body').textContent = body;
+  const detailEl = document.getElementById('modal-detail');
+  detailEl.innerHTML = details?.length ? details.map(([l, v]) =>
     `<div class="detail-row"><span class="detail-label">${l}</span><span class="detail-value">${v}</span></div>`
+  ).join('') : '';
+  const actionsEl = document.getElementById('modal-actions');
+  actionsEl.innerHTML = (actions || []).map(a =>
+    `<button class="${a.cls}" onclick="${a.fn}">${a.label}</button>`
   ).join('');
-  document.getElementById('modal-actions').innerHTML = actions.map(a =>
-    `<button class="${a.cls}" onclick="${a.fn}">${a.label}</button>`).join('');
   document.getElementById('modal-overlay').classList.add('open');
 }
 
-function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) closeModalNow(); }
-function closeModalNow() { document.getElementById('modal-overlay').classList.remove('open'); }
-
-// ── HELPERS ───────────────────────────────
-function tableWrap(thead, rows) {
-  return `<div style="overflow-x:auto"><table><thead>${thead}</thead><tbody>${rows}</tbody></table></div>`;
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModalNow();
 }
 
+function closeModalNow() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ── HELPERS ──
 function typeBadge(type) {
-  const map = { send:'badge-red', receive:'badge-green', deposit:'badge-blue', withdraw:'badge-yellow' };
-  return `<span class="badge ${map[type]||'badge-muted'}">${type||'—'}</span>`;
+  const map = {
+    send: 'badge-red', receive: 'badge-green',
+    deposit: 'badge-blue', withdraw: 'badge-yellow',
+  };
+  return `<span class="badge ${map[type] || 'badge-muted'}">${type || '—'}</span>`;
 }
 
 function statusBadge(status) {
-  const map = { completed:'badge-green', pending:'badge-yellow', failed:'badge-red' };
-  return `<span class="badge ${map[status]||'badge-muted'}">${status||'—'}</span>`;
-}
-
-function disputeStatusBadge(status) {
-  const map = {
-    pending:           ['badge-yellow', '⏳ Pending'],
-    resolved_reversed: ['badge-green',  '✅ Reversed'],
-    resolved_denied:   ['badge-red',    '❌ Denied'],
-  };
-  const [cls, label] = map[status] || ['badge-muted', status];
-  return `<span class="badge ${cls}">${label}</span>`;
+  const map = { completed: 'badge-green', pending: 'badge-yellow', failed: 'badge-red' };
+  return `<span class="badge ${map[status] || 'badge-muted'}">${status || '—'}</span>`;
 }
 
 function fmtDate(d) {
   if (!d) return '—';
-  return new Date(d).toLocaleDateString('en-KE', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  return new Date(d).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
-
-function esc(s) { return (s||'').replace(/'/g, "\\'"); }
 
 function toast(msg, color = 'green') {
   const el = document.getElementById('toast');
@@ -939,7 +771,7 @@ function toast(msg, color = 'green') {
   setTimeout(() => { el.className = ''; }, 3000);
 }
 
-// ── BOOT ──────────────────────────────────
+// ── INIT ──
 checkSession();
 </script>
 </body>
