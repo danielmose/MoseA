@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>PesaYetu Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
   // ══════════════════════════════════════════════════════
   // SUPPORT TICKETS
   // ══════════════════════════════════════════════════════
@@ -717,7 +717,23 @@ function renderRecentTxns(txns) {
 async function loadUsers() {
   const { data, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
   if (error) { document.getElementById('users-table').innerHTML = '<div class="empty">Failed to load users.</div>'; return; }
-  allUsers = data || [];
+
+  // Fetch real balances from currency_wallets
+  const { data: wallets } = await sb.from('currency_wallets').select('user_id, balance, frozen_balance, currency');
+  const walletMap = {};
+  (wallets || []).forEach(function(w) {
+    if (!walletMap[w.user_id]) walletMap[w.user_id] = w;
+    else walletMap[w.user_id].balance = (walletMap[w.user_id].balance || 0) + (w.balance || 0);
+  });
+
+  allUsers = (data || []).map(function(u) {
+    var w = walletMap[u.id];
+    return Object.assign({}, u, {
+      balance: w ? (w.balance || 0) : (u.balance || 0),
+      frozen_balance: w ? (w.frozen_balance || 0) : (u.frozen_balance || 0),
+      currency: (w && w.currency) ? w.currency : (u.currency || 'KES'),
+    });
+  });
   renderUsers(allUsers);
 }
 
