@@ -18,8 +18,13 @@
 
   async function getAdminId() {
     if (adminProfileId) return adminProfileId;
-    const { data } = await sb.from('profiles').select('id').eq('role','admin').limit(1).single();
-    adminProfileId = data?.id;
+    // Use the logged-in admin's ID directly from session
+    if (typeof currentAdmin !== 'undefined' && currentAdmin?.id) {
+      adminProfileId = currentAdmin.id;
+      return adminProfileId;
+    }
+    const { data: { session } } = await sb.auth.getSession();
+    adminProfileId = session?.user?.id || null;
     return adminProfileId;
   }
 
@@ -125,16 +130,18 @@
     const input = document.getElementById('admin-reply-input');
     const msg = input.value.trim();
     if (!msg || !currentTicketId) return;
-    input.value = '';
     const adminId = await getAdminId();
-    if (!adminId) { alert('Admin profile not found'); return; }
-    await sb.from('support_messages').insert({
+    if (!adminId) { toast('Could not get admin ID', 'red'); return; }
+    input.value = '';
+    const { error } = await sb.from('support_messages').insert({
       ticket_id: currentTicketId,
       sender_id: adminId,
       is_admin: true,
       message: msg,
     });
+    if (error) { toast('Failed to send: ' + error.message, 'red'); input.value = msg; return; }
     await sb.from('support_tickets').update({ updated_at: new Date().toISOString(), status: 'open' }).eq('id', currentTicketId);
+    await loadChatMessages(currentTicketId);
   }
 
   async function updateTicketStatus() {
