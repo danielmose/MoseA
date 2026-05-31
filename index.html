@@ -106,24 +106,99 @@
     renderChatMessages(data || []);
   }
 
+  let adminUndoQueue = [];
+
   function renderChatMessages(msgs) {
     const container = document.getElementById('chat-messages');
-    if (msgs.length === 0) {
+    // Filter deleted messages
+    const adminId = adminProfileId;
+    const visible = msgs.filter(m => {
+      if (m.deleted_for_everyone) return false;
+      if (Array.isArray(m.deleted_for) && m.deleted_for.includes(adminId)) return false;
+      return true;
+    });
+    if (visible.length === 0) {
       container.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">No messages yet. Reply below to start the conversation.</div>';
       return;
     }
-    container.innerHTML = msgs.map(msg => {
+    container.innerHTML = visible.map(msg => {
       const isAdmin = msg.is_admin;
-      return `<div style="display:flex;flex-direction:column;align-items:${isAdmin ? 'flex-end' : 'flex-start'}">
-        <div style="max-width:75%;padding:10px 14px;border-radius:${isAdmin ? '16px 16px 4px 16px' : '16px 16px 16px 4px'};background:${isAdmin ? 'var(--green)' : 'var(--surface2)'};color:${isAdmin ? '#000' : 'var(--text)'};font-size:14px;line-height:1.4">
+      return `<div id="msg-${msg.id}" style="display:flex;flex-direction:column;align-items:${isAdmin ? 'flex-end' : 'flex-start'};margin-bottom:2px" onclick="toggleMsgOptions('${msg.id}','${isAdmin}')">
+        <div style="max-width:75%;padding:10px 14px;border-radius:${isAdmin ? '16px 16px 4px 16px' : '16px 16px 16px 4px'};background:${isAdmin ? 'var(--green)' : 'var(--surface2)'};color:${isAdmin ? '#000' : 'var(--text)'};font-size:14px;line-height:1.4;cursor:pointer">
           ${msg.message}
         </div>
         <div style="font-size:10px;color:var(--muted);margin-top:3px;padding:0 4px">
           ${isAdmin ? '🛡 You (Admin)' : ('👤 ' + (msg.sender?.full_name || 'User'))} · ${new Date(msg.created_at).toLocaleDateString('en-KE',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}
         </div>
+        <div id="opts-${msg.id}" style="display:none;gap:6px;margin-top:4px">
+          <button onclick="event.stopPropagation();adminDeleteForMe('${msg.id}')" style="padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer">🗑 Delete for me</button>
+          ${isAdmin === true || isAdmin === 'true' ? `<button onclick="event.stopPropagation();adminDeleteForEveryone('${msg.id}')" style="padding:4px 10px;border-radius:8px;border:1px solid rgba(255,68,68,0.3);background:var(--red-dim);color:var(--red);font-size:11px;font-weight:600;cursor:pointer">🗑 Delete for everyone</button>` : ''}
+        </div>
       </div>`;
     }).join('');
     container.scrollTop = container.scrollHeight;
+  }
+
+  function toggleMsgOptions(msgId, isAdmin) {
+    const opts = document.getElementById('opts-' + msgId);
+    if (!opts) return;
+    const isVisible = opts.style.display === 'flex';
+    // Hide all others
+    document.querySelectorAll('[id^="opts-"]').forEach(el => el.style.display = 'none');
+    opts.style.display = isVisible ? 'none' : 'flex';
+  }
+
+  function adminDeleteForMe(msgId) {
+    document.getElementById('msg-' + msgId)?.remove();
+    const t = setTimeout(async () => {
+      const { data } = await sb.from('support_messages').select('deleted_for').eq('id', msgId).single();
+      const existing = data?.deleted_for || [];
+      const adminId = await getAdminId();
+      if (!existing.includes(adminId)) {
+        await sb.from('support_messages').update({ deleted_for: [...existing, adminId] }).eq('id', msgId);
+      }
+      adminUndoQueue = adminUndoQueue.filter(u => u.id !== msgId);
+      renderUndoBanner();
+    }, 5000);
+    adminUndoQueue.push({ id: msgId, type: 'me', timeout: t });
+    renderUndoBanner();
+  }
+
+  function adminDeleteForEveryone(msgId) {
+    document.getElementById('msg-' + msgId)?.remove();
+    const t = setTimeout(async () => {
+      await sb.from('support_messages').update({ deleted_for_everyone: true }).eq('id', msgId);
+      adminUndoQueue = adminUndoQueue.filter(u => u.id !== msgId);
+      renderUndoBanner();
+    }, 5000);
+    adminUndoQueue.push({ id: msgId, type: 'everyone', timeout: t });
+    renderUndoBanner();
+  }
+
+  function adminUndoDelete(msgId) {
+    const entry = adminUndoQueue.find(u => u.id === msgId);
+    if (!entry) return;
+    clearTimeout(entry.timeout);
+    adminUndoQueue = adminUndoQueue.filter(u => u.id !== msgId);
+    renderUndoBanner();
+    loadChatMessages(currentTicketId);
+  }
+
+  function renderUndoBanner() {
+    let banner = document.getElementById('admin-undo-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'admin-undo-banner';
+      banner.style.cssText = 'position:absolute;bottom:70px;left:0;right:0;padding:0 16px;display:flex;flex-direction:column;gap:6px;z-index:10';
+      document.getElementById('chat-messages').parentElement.style.position = 'relative';
+      document.getElementById('chat-messages').parentElement.appendChild(banner);
+    }
+    if (adminUndoQueue.length === 0) { banner.innerHTML = ''; return; }
+    banner.innerHTML = adminUndoQueue.map(u => `
+      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:12px">
+        <span style="color:var(--muted)">Message deleted ${u.type === 'everyone' ? 'for everyone' : 'for you'}</span>
+        <button onclick="adminUndoDelete('${u.id}')" style="background:none;border:none;color:var(--green);font-weight:700;font-size:12px;cursor:pointer">UNDO</button>
+      </div>`).join('');
   }
 
   async function sendAdminReply() {
