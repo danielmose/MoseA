@@ -86,6 +86,7 @@
     document.getElementById('chat-status-select').value = status;
     document.getElementById('chat-messages').innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">Loading messages...</div>';
     document.getElementById('support-chat-overlay').style.display = 'flex';
+    document.getElementById('support-chat-overlay').classList.add('open');
     await loadChatMessages(ticketId);
     subscribeToChat(ticketId);
   }
@@ -164,6 +165,7 @@
 
   function closeSupportChatNow() {
     document.getElementById('support-chat-overlay').style.display = 'none';
+    document.getElementById('support-chat-overlay').classList.remove('open');
     if (supportChannel) sb.removeChannel(supportChannel);
     currentTicketId = null;
     loadSupport();
@@ -311,6 +313,8 @@
   #toast.show { transform: translateY(0); opacity: 1; }
   #toast.green { background: var(--green); color: #000; }
   #toast.red { background: var(--red); color: #fff; }
+  .action-btn { padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid rgba(0,230,118,0.3); background: var(--green-dim); color: var(--green); font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .action-btn:hover { background: rgba(0,230,118,0.15); }
 
   @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 768px) {
@@ -505,7 +509,7 @@
     </div>
 
     <!-- SUPPORT CHAT MODAL -->
-    <div class="modal-overlay" id="support-chat-overlay" onclick="closeSupportChat(event)" style="z-index:1100">
+    <div class="modal-overlay open" id="support-chat-overlay" onclick="closeSupportChat(event)" style="z-index:1100;display:none">
       <div class="modal" style="max-width:600px;height:80vh;display:flex;flex-direction:column;padding:0;overflow:hidden">
         <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between">
           <div>
