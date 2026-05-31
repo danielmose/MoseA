@@ -5,7 +5,171 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>PesaYetu Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+
+  // ══════════════════════════════════════════════════════
+  // SUPPORT TICKETS
+  // ══════════════════════════════════════════════════════
+  let currentTicketId = null;
+  let currentTicketStatus = 'open';
+  let supportFilter = 'all';
+  let adminProfileId = null;
+  let supportChannel = null;
+
+  async function getAdminId() {
+    if (adminProfileId) return adminProfileId;
+    const { data } = await sb.from('profiles').select('id').eq('role','admin').limit(1).single();
+    adminProfileId = data?.id;
+    return adminProfileId;
+  }
+
+  async function loadSupport() {
+    document.getElementById('support-list').innerHTML = '<div class="loading">Loading...</div>';
+    let query = sb
+      .from('support_tickets')
+      .select('*, user:user_id(full_name, phone)')
+      .order('updated_at', { ascending: false });
+    if (supportFilter !== 'all') query = query.eq('status', supportFilter);
+    const { data, error } = await query;
+    if (error) { document.getElementById('support-list').innerHTML = '<div class="empty">Failed to load tickets</div>'; return; }
+
+    // Update badge
+    const openCount = (data || []).filter(t => t.status === 'open').length;
+    const badge = document.getElementById('support-badge');
+    if (openCount > 0) { badge.style.display = ''; badge.textContent = openCount; }
+    else badge.style.display = 'none';
+
+    if (!data || data.length === 0) {
+      document.getElementById('support-list').innerHTML = '<div class="empty">No support tickets found.</div>';
+      return;
+    }
+
+    const statusStyles = {
+      open:     { bg: 'rgba(0,230,118,0.1)',  color: '#00e676', label: '🟢 Open' },
+      resolved: { bg: 'rgba(68,138,255,0.1)', color: '#448aff', label: '✅ Resolved' },
+      closed:   { bg: 'rgba(255,255,255,0.06)', color: '#888', label: '⬛ Closed' },
+    };
+
+    document.getElementById('support-list').innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <tr><th>User</th><th>Subject</th><th>Status</th><th>Updated</th><th>Action</th></tr>
+          ${data.map(t => {
+            const s = statusStyles[t.status] || statusStyles.open;
+            return `<tr>
+              <td>
+                <div style="font-weight:600">${t.user?.full_name || '—'}</div>
+                <div style="font-size:11px;color:var(--muted)">${t.user?.phone || ''}</div>
+              </td>
+              <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.subject}</td>
+              <td><span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${s.bg};color:${s.color}">${s.label}</span></td>
+              <td style="font-size:12px;color:var(--muted)">${new Date(t.updated_at).toLocaleDateString('en-KE',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+              <td><button class="action-btn" onclick="openSupportChat('${t.id}','${(t.subject||'').replace(/'/g,"\'")}','${(t.user?.full_name||'').replace(/'/g,"\'")}','${t.status}')">Open Chat</button></td>
+            </tr>`;
+          }).join('')}
+        </table>
+      </div>`;
+  }
+
+  function filterSupport(val, el) {
+    supportFilter = val;
+    document.querySelectorAll('#support-filters .filter-tab').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    loadSupport();
+  }
+
+  async function openSupportChat(ticketId, subject, userName, status) {
+    currentTicketId = ticketId;
+    currentTicketStatus = status;
+    document.getElementById('chat-ticket-subject').textContent = subject;
+    document.getElementById('chat-ticket-user').textContent = userName;
+    document.getElementById('chat-status-select').value = status;
+    document.getElementById('chat-messages').innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">Loading messages...</div>';
+    document.getElementById('support-chat-overlay').style.display = 'flex';
+    await loadChatMessages(ticketId);
+    subscribeToChat(ticketId);
+  }
+
+  async function loadChatMessages(ticketId) {
+    const { data } = await sb
+      .from('support_messages')
+      .select('*, sender:sender_id(full_name, role)')
+      .eq('ticket_id', ticketId)
+      .order('created_at', { ascending: true });
+
+    renderChatMessages(data || []);
+  }
+
+  function renderChatMessages(msgs) {
+    const container = document.getElementById('chat-messages');
+    if (msgs.length === 0) {
+      container.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">No messages yet. Reply below to start the conversation.</div>';
+      return;
+    }
+    container.innerHTML = msgs.map(msg => {
+      const isAdmin = msg.is_admin;
+      return `<div style="display:flex;flex-direction:column;align-items:${isAdmin ? 'flex-end' : 'flex-start'}">
+        <div style="max-width:75%;padding:10px 14px;border-radius:${isAdmin ? '16px 16px 4px 16px' : '16px 16px 16px 4px'};background:${isAdmin ? 'var(--green)' : 'var(--surface2)'};color:${isAdmin ? '#000' : 'var(--text)'};font-size:14px;line-height:1.4">
+          ${msg.message}
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;padding:0 4px">
+          ${isAdmin ? '🛡 You (Admin)' : ('👤 ' + (msg.sender?.full_name || 'User'))} · ${new Date(msg.created_at).toLocaleDateString('en-KE',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}
+        </div>
+      </div>`;
+    }).join('');
+    container.scrollTop = container.scrollHeight;
+  }
+
+  async function sendAdminReply() {
+    const input = document.getElementById('admin-reply-input');
+    const msg = input.value.trim();
+    if (!msg || !currentTicketId) return;
+    input.value = '';
+    const adminId = await getAdminId();
+    if (!adminId) { alert('Admin profile not found'); return; }
+    await sb.from('support_messages').insert({
+      ticket_id: currentTicketId,
+      sender_id: adminId,
+      is_admin: true,
+      message: msg,
+    });
+    await sb.from('support_tickets').update({ updated_at: new Date().toISOString(), status: 'open' }).eq('id', currentTicketId);
+  }
+
+  async function updateTicketStatus() {
+    const newStatus = document.getElementById('chat-status-select').value;
+    if (!currentTicketId) return;
+    await sb.from('support_tickets').update({ status: newStatus }).eq('id', currentTicketId);
+    currentTicketStatus = newStatus;
+    loadSupport();
+  }
+
+  function subscribeToChat(ticketId) {
+    if (supportChannel) sb.removeChannel(supportChannel);
+    supportChannel = sb
+      .channel('admin_support_' + ticketId)
+      .on('postgres_changes', {
+        event: 'INSERT', schema: 'public',
+        table: 'support_messages',
+        filter: 'ticket_id=eq.' + ticketId,
+      }, async () => {
+        await loadChatMessages(ticketId);
+      })
+      .subscribe();
+  }
+
+  function closeSupportChat(e) {
+    if (e.target.id === 'support-chat-overlay') closeSupportChatNow();
+  }
+
+  function closeSupportChatNow() {
+    document.getElementById('support-chat-overlay').style.display = 'none';
+    if (supportChannel) sb.removeChannel(supportChannel);
+    currentTicketId = null;
+    loadSupport();
+  }
+
+</script>
 <style>
   :root {
     --bg: #0a0a0f;
@@ -225,6 +389,11 @@
         <span>Disputes</span>
         <span class="nav-badge" id="disputes-badge" style="display:none">0</span>
       </button>
+      <button class="nav-item" onclick="showPage('support')" id="nav-support">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Support</span>
+        <span class="nav-badge" id="support-badge" style="display:none">0</span>
+      </button>
     </nav>
     <div class="sidebar-footer">
       <div class="admin-info">
@@ -320,6 +489,47 @@
         <button class="filter-tab" onclick="filterDisputes('resolved_denied',this)">Denied</button>
       </div>
       <div id="disputes-list"><div class="loading">Loading...</div></div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="page" id="page-support">
+      <div class="page-title">Support Tickets</div>
+      <div class="page-sub">Customer support conversations</div>
+      <div class="filter-tabs" id="support-filters">
+        <button class="filter-tab active" onclick="filterSupport('all',this)">All</button>
+        <button class="filter-tab" onclick="filterSupport('open',this)">Open</button>
+        <button class="filter-tab" onclick="filterSupport('resolved',this)">Resolved</button>
+        <button class="filter-tab" onclick="filterSupport('closed',this)">Closed</button>
+      </div>
+      <div id="support-list"><div class="loading">Loading...</div></div>
+    </div>
+
+    <!-- SUPPORT CHAT MODAL -->
+    <div class="modal-overlay" id="support-chat-overlay" onclick="closeSupportChat(event)" style="z-index:1100">
+      <div class="modal" style="max-width:600px;height:80vh;display:flex;flex-direction:column;padding:0;overflow:hidden">
+        <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div id="chat-ticket-subject" style="font-size:16px;font-weight:700"></div>
+            <div id="chat-ticket-user" style="font-size:12px;color:var(--muted);margin-top:2px"></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="chat-status-select" onchange="updateTicketStatus()" style="padding:6px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;font-family:DM Sans,sans-serif;outline:none">
+              <option value="open">🟢 Open</option>
+              <option value="resolved">✅ Resolved</option>
+              <option value="closed">⬛ Closed</option>
+            </select>
+            <button onclick="closeSupportChatNow()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1">✕</button>
+          </div>
+        </div>
+        <div id="chat-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px"></div>
+        <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0">
+          <input id="admin-reply-input" type="text" placeholder="Type a reply..." onkeydown="if(event.key==='Enter')sendAdminReply()"
+            style="flex:1;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:20px;color:var(--text);font-size:14px;outline:none;font-family:DM Sans,sans-serif" />
+          <button onclick="sendAdminReply()" style="width:40px;height:40px;border-radius:50%;background:var(--green);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
   </div>
