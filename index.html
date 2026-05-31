@@ -642,6 +642,8 @@ function initApp() {
   loadTransactions();
   loadWithdrawals();
   loadDisputes();
+  loadSupport();
+  subscribeToDisputes();
 }
 
 // ── NAVIGATION ──
@@ -650,6 +652,8 @@ function showPage(page) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
   document.getElementById('nav-' + page).classList.add('active');
+  if (page === 'support') loadSupport();
+  if (page === 'disputes') loadDisputes();
 }
 
 // ── DASHBOARD ──
@@ -718,19 +722,24 @@ async function loadUsers() {
   const { data, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
   if (error) { document.getElementById('users-table').innerHTML = '<div class="empty">Failed to load users.</div>'; return; }
 
-  // Fetch real balances from currency_wallets
-  const { data: wallets } = await sb.from('currency_wallets').select('user_id, balance, frozen_balance, currency');
+  // Fetch real balances from currency_wallets (sum all wallets per user)
+  const { data: wallets } = await sb.from('currency_wallets').select('user_id, balance, currency');
   const walletMap = {};
   (wallets || []).forEach(function(w) {
-    if (!walletMap[w.user_id]) walletMap[w.user_id] = w;
-    else walletMap[w.user_id].balance = (walletMap[w.user_id].balance || 0) + (w.balance || 0);
+    if (!walletMap[w.user_id]) {
+      walletMap[w.user_id] = { balance: w.balance || 0, currency: w.currency };
+    } else {
+      // Sum balances; prefer KES as display currency
+      walletMap[w.user_id].balance = (walletMap[w.user_id].balance || 0) + (w.balance || 0);
+      if (w.currency === 'KES') walletMap[w.user_id].currency = 'KES';
+    }
   });
 
   allUsers = (data || []).map(function(u) {
     var w = walletMap[u.id];
     return Object.assign({}, u, {
       balance: w ? (w.balance || 0) : (u.balance || 0),
-      frozen_balance: w ? (w.frozen_balance || 0) : (u.frozen_balance || 0),
+      frozen_balance: u.frozen_balance || 0,
       currency: (w && w.currency) ? w.currency : (u.currency || 'KES'),
     });
   });
@@ -1003,6 +1012,19 @@ async function loadDisputes() {
   var badge = document.getElementById('disputes-badge');
   if (pending > 0) { badge.textContent = pending; badge.style.display = 'inline-block'; }
   else { badge.style.display = 'none'; }
+}
+
+// ── REAL-TIME DISPUTES ──
+var disputesChannel = null;
+function subscribeToDisputes() {
+  if (disputesChannel) sb.removeChannel(disputesChannel);
+  disputesChannel = sb
+    .channel('admin_disputes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'disputes' }, function() {
+      loadDisputes();
+      loadDashboard();
+    })
+    .subscribe();
 }
 
 function filterDisputes(status, btn) {
