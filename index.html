@@ -18,7 +18,6 @@
 
   async function getAdminId() {
     if (adminProfileId) return adminProfileId;
-    // Use the logged-in admin's ID directly from session
     if (typeof currentAdmin !== 'undefined' && currentAdmin?.id) {
       adminProfileId = currentAdmin.id;
       return adminProfileId;
@@ -38,7 +37,6 @@
     const { data, error } = await query;
     if (error) { document.getElementById('support-list').innerHTML = '<div class="empty">Failed to load tickets</div>'; return; }
 
-    // Update badge
     const openCount = (data || []).filter(t => t.status === 'open').length;
     const badge = document.getElementById('support-badge');
     if (openCount > 0) { badge.style.display = ''; badge.textContent = openCount; }
@@ -102,7 +100,6 @@
       .select('*, sender:sender_id(full_name, role)')
       .eq('ticket_id', ticketId)
       .order('created_at', { ascending: true });
-
     renderChatMessages(data || []);
   }
 
@@ -110,7 +107,6 @@
 
   function renderChatMessages(msgs) {
     const container = document.getElementById('chat-messages');
-    // Filter deleted messages
     const adminId = adminProfileId;
     const visible = msgs.filter(m => {
       if (m.deleted_for_everyone) return false;
@@ -143,7 +139,6 @@
     const opts = document.getElementById('opts-' + msgId);
     if (!opts) return;
     const isVisible = opts.style.display === 'flex';
-    // Hide all others
     document.querySelectorAll('[id^="opts-"]').forEach(el => el.style.display = 'none');
     opts.style.display = isVisible ? 'none' : 'flex';
   }
@@ -252,7 +247,6 @@
     currentTicketId = null;
     loadSupport();
   }
-
 </script>
 <style>
   :root {
@@ -808,14 +802,12 @@ async function loadUsers() {
   const { data, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
   if (error) { document.getElementById('users-table').innerHTML = '<div class="empty">Failed to load users.</div>'; return; }
 
-  // Fetch real balances from currency_wallets (sum all wallets per user)
   const { data: wallets } = await sb.from('currency_wallets').select('user_id, balance, currency');
   const walletMap = {};
   (wallets || []).forEach(function(w) {
     if (!walletMap[w.user_id]) {
       walletMap[w.user_id] = { balance: w.balance || 0, currency: w.currency };
     } else {
-      // Sum balances; prefer KES as display currency
       walletMap[w.user_id].balance = (walletMap[w.user_id].balance || 0) + (w.balance || 0);
       if (w.currency === 'KES') walletMap[w.user_id].currency = 'KES';
     }
@@ -914,16 +906,17 @@ async function confirmSuspend(id) {
 }
 
 function unsuspendUser(id, name) {
-  showConfirmModal('Unsuspend User', 'Restore access for ' + name + '?', [
+  showConfirmModal('Unsuspend User', 'Restore access for ' + name + '? This will also clear any frozen balance.', [
     { label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
     { label: 'Unsuspend', cls: 'modal-confirm-success', fn: 'confirmUnsuspend(\'' + id + '\')' }
   ]);
 }
 async function confirmUnsuspend(id) {
   closeModalNow();
-  var r = await sb.from('profiles').update({ suspended: false }).eq('id', id);
+  // ✅ FIX: also clear frozen_balance and freeze_reason so balance displays correctly
+  var r = await sb.from('profiles').update({ suspended: false, frozen_balance: 0, freeze_reason: null }).eq('id', id);
   if (r.error) { toast('Failed to unsuspend', 'red'); return; }
-  toast('User unsuspended', 'green'); loadUsers(); loadDashboard();
+  toast('User unsuspended ✓', 'green'); loadUsers(); loadDashboard();
 }
 
 // ── FREEZE / UNFREEZE ──
@@ -1100,7 +1093,6 @@ async function loadDisputes() {
   else { badge.style.display = 'none'; }
 }
 
-// ── REAL-TIME DISPUTES ──
 var disputesChannel = null;
 function subscribeToDisputes() {
   if (disputesChannel) sb.removeChannel(disputesChannel);
