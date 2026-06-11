@@ -100,14 +100,14 @@
       .select('*, sender:sender_id(full_name, role)')
       .eq('ticket_id', ticketId)
       .order('created_at', { ascending: true });
-    renderChatMessages(data || []);
+    await renderChatMessages(data || []);
   }
 
   let adminUndoQueue = [];
 
-  function renderChatMessages(msgs) {
+  async function renderChatMessages(msgs) {
     const container = document.getElementById('chat-messages');
-    const adminId = adminProfileId;
+    const adminId = await getAdminId();
     const visible = msgs.filter(m => {
       if (m.deleted_for_everyone) return false;
       if (Array.isArray(m.deleted_for) && m.deleted_for.includes(adminId)) return false;
@@ -496,7 +496,7 @@
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value blue" id="stat-users">—</div><div class="stat-change">Registered accounts</div></div>
         <div class="stat-card"><div class="stat-label">Total Transactions</div><div class="stat-value green" id="stat-txns">—</div><div class="stat-change">All time</div></div>
-        <div class="stat-card"><div class="stat-label">Total Volume</div><div class="stat-value green" id="stat-volume">—</div><div class="stat-change">KES moved</div></div>
+        <div class="stat-card"><div class="stat-label">Total Volume</div><div class="stat-value green" id="stat-volume">—</div><div class="stat-change">All currencies</div></div>
         <div class="stat-card"><div class="stat-label">Pending Withdrawals</div><div class="stat-value yellow" id="stat-withdrawals">—</div><div class="stat-change">Awaiting approval</div></div>
         <div class="stat-card"><div class="stat-label">Open Disputes</div><div class="stat-value red" id="stat-disputes">—</div><div class="stat-change">Needs review</div></div>
         <div class="stat-card"><div class="stat-label">Suspended Users</div><div class="stat-value red" id="stat-suspended">—</div><div class="stat-change">Restricted accounts</div></div>
@@ -585,7 +585,7 @@
     </div>
 
     <!-- SUPPORT CHAT MODAL -->
-    <div class="modal-overlay open" id="support-chat-overlay" onclick="closeSupportChat(event)" style="z-index:1100;display:none">
+    <div class="modal-overlay" id="support-chat-overlay" onclick="closeSupportChat(event)" style="z-index:1100;display:none">
       <div class="modal" style="max-width:600px;height:80vh;display:flex;flex-direction:column;padding:0;overflow:hidden">
         <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between">
           <div>
@@ -762,12 +762,12 @@ async function loadDashboard() {
 
   document.getElementById('stat-users').textContent       = userCount ?? '—';
   document.getElementById('stat-txns').textContent        = txnCount ?? '—';
-  document.getElementById('stat-volume').textContent      = 'KES ' + volume.toLocaleString('en', { maximumFractionDigits: 0 });
+  document.getElementById('stat-volume').textContent      = volume.toLocaleString('en', { maximumFractionDigits: 0 });
   document.getElementById('stat-withdrawals').textContent = pendingW ?? '0';
   document.getElementById('stat-disputes').textContent    = openDisputes ?? '0';
   document.getElementById('stat-suspended').textContent   = suspended ?? '0';
-  document.getElementById('stat-frozen').textContent      = 'KES ' + totalFrozen.toLocaleString('en', { maximumFractionDigits: 0 });
-  document.getElementById('stat-fees').textContent        = 'KES ' + totalFees.toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  document.getElementById('stat-frozen').textContent      = totalFrozen.toLocaleString('en', { maximumFractionDigits: 0 });
+  document.getElementById('stat-fees').textContent        = totalFees.toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   if (openDisputes > 0) {
     const badge = document.getElementById('disputes-badge');
@@ -1015,7 +1015,7 @@ function renderTxns() {
 
 // ── WITHDRAWALS ──
 async function loadWithdrawals() {
-  var r = await sb.from('withdrawals').select('*, profile:user_id(full_name, phone)').order('created_at', { ascending: false });
+  var r = await sb.from('withdrawals').select('*, profile:user_id(full_name, phone, currency)').order('created_at', { ascending: false });
   if (r.error) { document.getElementById('withdrawals-table').innerHTML = '<div class="empty">Failed to load.</div>'; return; }
   allWithdrawals = r.data || [];
   renderWithdrawals();
@@ -1054,7 +1054,7 @@ function renderWithdrawals() {
 function approveWithdrawal(id) {
   var w = allWithdrawals.find(function(x) { return x.id === id; });
   showConfirmModal('Approve Withdrawal',
-    'Approve KES ' + Number(w ? w.amount : 0).toLocaleString() + ' withdrawal for ' + (w && w.profile ? w.profile.full_name : '—') + '?',
+    'Approve ' + (w ? (w.currency || 'KES') : 'KES') + ' ' + Number(w ? w.amount : 0).toLocaleString() + ' withdrawal for ' + (w && w.profile ? w.profile.full_name : '—') + '?',
     [{ label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
      { label: 'Approve', cls: 'modal-confirm-success', fn: 'confirmApproveWd(\'' + id + '\')' }]);
 }
@@ -1068,7 +1068,7 @@ async function confirmApproveWd(id) {
 function rejectWithdrawal(id) {
   var w = allWithdrawals.find(function(x) { return x.id === id; });
   showConfirmModal('Reject Withdrawal',
-    'Reject KES ' + Number(w ? w.amount : 0).toLocaleString() + ' withdrawal for ' + (w && w.profile ? w.profile.full_name : '—') + '?',
+    'Reject ' + (w ? (w.currency || 'KES') : 'KES') + ' ' + Number(w ? w.amount : 0).toLocaleString() + ' withdrawal for ' + (w && w.profile ? w.profile.full_name : '—') + '?',
     [{ label: 'Cancel', cls: 'modal-cancel', fn: 'closeModalNow()' },
      { label: 'Reject', cls: 'modal-confirm-danger', fn: 'confirmRejectWd(\'' + id + '\')' }]);
 }
